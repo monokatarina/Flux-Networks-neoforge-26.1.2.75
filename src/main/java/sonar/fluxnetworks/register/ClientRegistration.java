@@ -17,7 +17,7 @@ import sonar.fluxnetworks.common.integration.MUIIntegration;
 
 import javax.annotation.Nonnull;
 
-@EventBusSubscriber(modid = FluxNetworks.MODID)
+@EventBusSubscriber(modid = FluxNetworks.MODID, value = Dist.CLIENT)
 public class ClientRegistration {
 
     @SubscribeEvent
@@ -53,3 +53,4 @@ public class ClientRegistration {
     }
 
 }
+
