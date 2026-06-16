@@ -3,7 +3,6 @@ package sonar.fluxnetworks.client.design;
 import icyllis.modernui.text.InputFilter;
 import icyllis.modernui.text.Spanned;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import sonar.fluxnetworks.common.connection.FluxNetwork;
 import sonar.fluxnetworks.common.util.FluxUtils;
 
@@ -15,7 +14,6 @@ import javax.annotation.Nullable;
  *
  * @see icyllis.modernui.widget.TextView#setFilters(InputFilter[])
  */
-@OnlyIn(Dist.CLIENT)
 public class PasswordFilter extends InputFilter.LengthFilter {
 
     private static final PasswordFilter sInstance = new PasswordFilter();

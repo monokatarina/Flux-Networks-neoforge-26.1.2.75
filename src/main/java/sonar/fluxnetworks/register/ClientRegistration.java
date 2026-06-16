@@ -2,7 +2,6 @@ package sonar.fluxnetworks.register;
 
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
@@ -18,7 +17,6 @@ import sonar.fluxnetworks.common.integration.MUIIntegration;
 
 import javax.annotation.Nonnull;
 
-@OnlyIn(Dist.CLIENT)
 @EventBusSubscriber(modid = FluxNetworks.MODID)
 public class ClientRegistration {
 

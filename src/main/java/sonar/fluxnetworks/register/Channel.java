@@ -6,7 +6,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 
@@ -29,7 +28,6 @@ public abstract class Channel {
         return sChannel;
     }
 
-    @OnlyIn(Dist.CLIENT)
     public abstract void sendToServer(@Nonnull FriendlyByteBuf payload);
 
     public final void sendToPlayer(@Nonnull FriendlyByteBuf payload, @Nonnull Player player) {

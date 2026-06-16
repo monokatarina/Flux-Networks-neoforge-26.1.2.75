@@ -5,7 +5,6 @@ import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -182,13 +181,11 @@ public class FluxTranslate {
     }
 
     @Nonnull
-    @OnlyIn(Dist.CLIENT)
     public String format() {
         return get();
     }
 
     @Nonnull
-    @OnlyIn(Dist.CLIENT)
     public String format(Object... args) {
         // Usar String.format com o texto traduzido
         String translated = Language.getInstance().getOrDefault(mKey, mKey);

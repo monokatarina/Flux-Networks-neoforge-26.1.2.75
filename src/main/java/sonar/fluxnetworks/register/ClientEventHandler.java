@@ -1,14 +1,12 @@
 package sonar.fluxnetworks.register;
 
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import sonar.fluxnetworks.FluxNetworks;
 import sonar.fluxnetworks.client.ClientCache;
 
-@OnlyIn(Dist.CLIENT)
 @EventBusSubscriber(modid = FluxNetworks.MODID, value = Dist.CLIENT)
 public class ClientEventHandler {
 

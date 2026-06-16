@@ -11,7 +11,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import sonar.fluxnetworks.api.FluxConstants;
 import sonar.fluxnetworks.client.ClientCache;
 import sonar.fluxnetworks.client.gui.basic.GuiFluxCore;
@@ -19,7 +18,6 @@ import sonar.fluxnetworks.common.block.FluxStorageBlock;
 
 import javax.annotation.Nonnull;
 
-@OnlyIn(Dist.CLIENT)
 public class FluxStorageItemRenderer {
 
     @SuppressWarnings({"unused", "UnusedParameters"})

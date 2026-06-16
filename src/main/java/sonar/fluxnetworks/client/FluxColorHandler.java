@@ -8,7 +8,6 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jspecify.annotations.Nullable;
 import sonar.fluxnetworks.api.FluxConstants;
 import sonar.fluxnetworks.client.gui.basic.GuiFluxCore;
@@ -17,7 +16,6 @@ import sonar.fluxnetworks.common.device.TileFluxDevice;
 /**
  * Render network color on blocks and items.
  */
-@OnlyIn(Dist.CLIENT)
 public class FluxColorHandler {
 
     public static final FluxColorHandler INSTANCE = new FluxColorHandler();

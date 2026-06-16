@@ -9,7 +9,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.thread.BlockableEventLoop;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import sonar.fluxnetworks.api.FluxConstants;
 import sonar.fluxnetworks.api.device.IFluxDevice;
 import sonar.fluxnetworks.api.network.SecurityLevel;
@@ -30,7 +29,6 @@ import static sonar.fluxnetworks.register.Channel.sChannel;
  *
  * @see Messages
  */
-@OnlyIn(Dist.CLIENT)
 @ParametersAreNonnullByDefault
 public class ClientMessages {
 

@@ -4,7 +4,6 @@ import it.unimi.dsi.fastutil.ints.*;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.nbt.CompoundTag;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import sonar.fluxnetworks.FluxNetworks;
 import sonar.fluxnetworks.api.FluxConstants;
 import sonar.fluxnetworks.api.device.IFluxDevice;
@@ -19,7 +18,6 @@ import java.util.List;
 /**
  * Main thread only.
  */
-@OnlyIn(Dist.CLIENT)
 public final class ClientCache {
 
     private static final int MAX_RECENT_PASSWORD_COUNT = 5;
