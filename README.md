@@ -6,17 +6,13 @@
 
 ## Screenshots
 
-![Flux Networks screenshot 1](docs/images/%7B59DE8649-EBBF-494C-BF7C-0A69811CCF68%7D.png)
-
-![Flux Networks screenshot 2](docs/images/%7B638C87DC-457C-45BF-BC4E-9AF293DB6231%7D.png)
-
 ![Flux Networks screenshot 3](docs/images/%7B9A77B477-F5EC-4B45-8FC3-00DEBC8622D3%7D.png)
 
 ![Flux Networks screenshot 4](docs/images/%7B9C4FD954-931D-483B-ACD6-435CC61ADC46%7D.png)
 
 ![Flux Networks screenshot 5](docs/images/%7BDF02E34A-3E0A-4AE0-A96C-A965807FC93A%7D.png)
 
-![Flux Networks screenshot 6](docs/images/%7BE4E7C6CF-546C-47D7-BCAD-38E9BA9633D1%7D.png)
+
 
 ---
 
