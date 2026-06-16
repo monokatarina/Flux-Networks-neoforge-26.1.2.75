@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "fluxnetworks",
+  "pattern": [
+    "fof",
+    "oeo",
+    "fof"
+  ],
+  "key": {
+    "o": "minecraft:obsidian",
+    "f": "fluxnetworks:flux_dust",
+    "e": "minecraft:ender_eye"
+  },
+  "result": {
+    "id": "fluxnetworks:flux_core",
+    "count": 4
+  }
+}

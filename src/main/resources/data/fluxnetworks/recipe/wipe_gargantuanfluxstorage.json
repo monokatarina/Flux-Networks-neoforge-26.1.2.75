@@ -1,0 +1,11 @@
+{
+  "type": "fluxnetworks:nbt_wipe_recipe",
+  "category": "misc",
+  "group": "fluxnetworks",
+  "ingredients": [
+    "fluxnetworks:gargantuan_flux_storage"
+  ],
+  "result": {
+    "id": "fluxnetworks:gargantuan_flux_storage"
+  }
+}

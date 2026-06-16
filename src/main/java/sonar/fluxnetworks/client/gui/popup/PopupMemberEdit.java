@@ -1,0 +1,161 @@
+package sonar.fluxnetworks.client.gui.popup;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.input.KeyEvent;
+import org.lwjgl.glfw.GLFW;
+import sonar.fluxnetworks.api.FluxConstants;
+import sonar.fluxnetworks.api.FluxTranslate;
+import sonar.fluxnetworks.api.network.AccessLevel;
+import sonar.fluxnetworks.client.gui.basic.GuiButtonCore;
+import sonar.fluxnetworks.client.gui.basic.GuiPopupCore;
+import sonar.fluxnetworks.client.gui.button.SimpleButton;
+import sonar.fluxnetworks.client.gui.tab.GuiTabMembers;
+import sonar.fluxnetworks.register.ClientMessages;
+
+import javax.annotation.Nonnull;
+
+public class PopupMemberEdit extends GuiPopupCore<GuiTabMembers> {
+
+    public SimpleButton mSetAsUser;
+    public SimpleButton mSetAsAdmin;
+    public SimpleButton mCancelMembership;
+    public SimpleButton mTransferOwnership;
+    public int mTransferOwnershipCount;
+
+    public PopupMemberEdit(GuiTabMembers host) {
+        super(host);
+    }
+
+    @Override
+    public void init() {
+        super.init();
+        boolean editPermission = mHost.getAccessLevel().canEdit();
+        boolean ownerPermission = mHost.getAccessLevel().canDelete();
+        AccessLevel targetAccess = mHost.mSelectedMember.getAccessLevel();
+        if (targetAccess != AccessLevel.OWNER && editPermission) {
+            String text;
+            int width;
+            text = FluxTranslate.SET_USER.get();
+            width = Math.max(64, font.width(text) + 4);
+            mSetAsUser = new SimpleButton(this,
+                    leftPos + (imageWidth - width) / 2, topPos + 78, width, 12, text);
+            mSetAsUser.setClickable(targetAccess == AccessLevel.BLOCKED ||
+                    targetAccess == AccessLevel.SUPER_ADMIN ||
+                    (targetAccess == AccessLevel.ADMIN && ownerPermission));
+            mButtons.add(mSetAsUser);
+
+            text = FluxTranslate.SET_ADMIN.get();
+            width = Math.max(64, font.width(text) + 4);
+            mSetAsAdmin = new SimpleButton(this,
+                    leftPos + (imageWidth - width) / 2, topPos + 78 + 16, width, 12, text);
+            mSetAsAdmin.setClickable(targetAccess == AccessLevel.USER && ownerPermission);
+            mButtons.add(mSetAsAdmin);
+
+            text = FluxTranslate.CANCEL_MEMBERSHIP.get();
+            width = Math.max(64, font.width(text) + 4);
+            mCancelMembership = new SimpleButton(this,
+                    leftPos + (imageWidth - width) / 2, topPos + 78 + 32, width, 12, text, 0xFFFF5555);
+            mCancelMembership.setClickable(targetAccess == AccessLevel.USER ||
+                    (targetAccess == AccessLevel.ADMIN && ownerPermission));
+            mButtons.add(mCancelMembership);
+
+            text = FluxTranslate.TRANSFER_OWNERSHIP.get();
+            width = Math.max(64, font.width(text) + 4);
+            mTransferOwnership = new SimpleButton(this,
+                    leftPos + (imageWidth - width) / 2, topPos + 78 + 48, width, 12, text, 0xFFFF00FF);
+            mTransferOwnership.setClickable(false);
+            mButtons.add(mTransferOwnership);
+        }
+    }
+
+    @Override
+    public void drawForegroundLayer(@Nonnull GuiGraphicsExtractor gr, int mouseX, int mouseY, float deltaTicks) {
+        super.drawForegroundLayer(gr, mouseX, mouseY, deltaTicks);
+
+        // Usar centeredText em vez de drawCenteredString
+        gr.centeredText(font,
+                ChatFormatting.AQUA + mHost.mSelectedMember.getCachedName(),
+                leftPos + (imageWidth / 2), topPos + 38, 0xFFFFFFFF);
+        gr.centeredText(font, mHost.mSelectedMember.getAccessLevel().getFormattedName(),
+                leftPos + (imageWidth / 2), topPos + 48, 0xFFFFFFFF);
+
+        final String uuid = mHost.mSelectedMember.getPlayerUUID().toString();
+
+        // CORREÇÃO: pushPose() em vez de pushMatrix()
+        gr.pose().pushMatrix();
+        // CORREÇÃO: scale com 2 argumentos (x, y)
+        gr.pose().scale(0.75f, 0.75f);
+
+        // Para texto com escala, precisamos calcular as posições corretamente
+        String uuidFirstPart = "UUID: " + uuid.substring(0, 16);
+        String uuidSecondPart = uuid.substring(16);
+        int firstWidth = font.width(uuidFirstPart);
+        int secondWidth = font.width(uuidSecondPart);
+        int centerX = (int) ((leftPos + (imageWidth / 2)) / 0.75f);
+
+        gr.text(font, uuidFirstPart,
+                centerX - firstWidth / 2, (int) ((topPos + 60) / 0.75f), 0xFFFFFFFF, true);
+        gr.text(font, uuidSecondPart,
+                centerX - secondWidth / 2, (int) ((topPos + 68) / 0.75f), 0xFFFFFFFF, true);
+
+        // CORREÇÃO: popPose() em vez de popMatrix()
+        gr.pose().popMatrix();
+
+        if (mTransferOwnership != null &&
+                mTransferOwnership.isMouseHovered(mouseX, mouseY) &&
+                !mTransferOwnership.isClickable() &&
+                mHost.mSelectedMember.getAccessLevel() != AccessLevel.BLOCKED &&
+                mHost.getAccessLevel().canDelete()) {
+            // Usar centeredText para a mensagem de tooltip
+            gr.centeredText(font, FluxTranslate.DOUBLE_SHIFT.get(),
+                    mTransferOwnership.x + mTransferOwnership.width / 2, mTransferOwnership.y + 14, 0xFFFFFFFF);
+        }
+    }
+
+    @Override
+    public void onButtonClicked(GuiButtonCore button, int mouseX, int mouseY, int mouseButton) {
+        super.onButtonClicked(button, mouseX, mouseY, mouseButton);
+        if (mouseButton == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+            byte type = 0;
+            boolean send = true;
+            if (button == mSetAsUser) {
+                type = FluxConstants.MEMBERSHIP_SET_USER;
+            } else if (button == mSetAsAdmin) {
+                type = FluxConstants.MEMBERSHIP_SET_ADMIN;
+            } else if (button == mCancelMembership) {
+                type = FluxConstants.MEMBERSHIP_CANCEL_MEMBERSHIP;
+            } else if (button == mTransferOwnership) {
+                type = FluxConstants.MEMBERSHIP_TRANSFER_OWNERSHIP;
+            } else {
+                send = false;
+            }
+            if (send) {
+                ClientMessages.editMember(
+                        mHost.getToken(), mHost.getNetwork(), mHost.mSelectedMember.getPlayerUUID(), type);
+                mHost.closePopup();
+            }
+        }
+    }
+
+    // CORREÇÃO: keyPressed agora usa KeyEvent
+    @Override
+    public boolean keyPressed(KeyEvent event) {
+        int keyCode = event.key();
+        int modifiers = event.modifiers();
+
+        if (mTransferOwnership != null) {
+            if ((modifiers & GLFW.GLFW_MOD_SHIFT) != 0) {
+                mTransferOwnershipCount++;
+                if (mTransferOwnershipCount > 1) {
+                    mTransferOwnership.setClickable(mHost.getAccessLevel().canDelete() &&
+                            mHost.mSelectedMember.getAccessLevel() != AccessLevel.BLOCKED);
+                }
+            } else {
+                mTransferOwnershipCount = 0;
+                mTransferOwnership.setClickable(false);
+            }
+        }
+        return super.keyPressed(event);
+    }
+}

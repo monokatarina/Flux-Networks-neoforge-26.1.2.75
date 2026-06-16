@@ -1,0 +1,119 @@
+package sonar.fluxnetworks.client.gui.tab;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.world.entity.player.Player;
+import org.lwjgl.glfw.GLFW;
+import sonar.fluxnetworks.api.FluxTranslate;
+import sonar.fluxnetworks.api.network.SecurityLevel;
+import sonar.fluxnetworks.client.gui.EnumNavigationTab;
+import sonar.fluxnetworks.client.gui.basic.*;
+import sonar.fluxnetworks.client.gui.button.ColorButton;
+import sonar.fluxnetworks.client.gui.button.FluxEditBox;
+import sonar.fluxnetworks.client.gui.popup.PopupCustomColor;
+import sonar.fluxnetworks.common.connection.FluxMenu;
+import sonar.fluxnetworks.common.connection.FluxNetwork;
+import sonar.fluxnetworks.common.util.FluxUtils;
+
+import javax.annotation.Nonnull;
+
+/**
+ * the base class for settings and creation guis
+ */
+public abstract class GuiTabEditAbstract extends GuiTabCore {
+
+    protected SecurityLevel mSecurityLevel;
+    public ColorButton mColorButton;
+    public FluxEditBox mNetworkName;
+    public FluxEditBox mPassword;
+
+    public GuiTabEditAbstract(@Nonnull FluxMenu menu, @Nonnull Player player) {
+        super(menu, player);
+    }
+
+    public abstract void onEditSettingsChanged();
+
+    @Override
+    public void init() {
+        super.init();
+        if (getNetwork().isValid() || getNavigationTab() == EnumNavigationTab.TAB_CREATE) {
+            mNetworkName = FluxEditBox.create(FluxTranslate.NETWORK_NAME.get() + ": ", font,
+                            leftPos + 16, topPos + 28, 144, 12)
+                    .setOutlineColor(0xFF808080);
+            mNetworkName.setMaxLength(FluxNetwork.MAX_NETWORK_NAME_LENGTH);
+            mNetworkName.setResponder(string -> onEditSettingsChanged());
+            addRenderableWidget(mNetworkName);
+
+            mPassword = FluxEditBox.create(FluxTranslate.NETWORK_PASSWORD.get() + ": ", font,
+                            leftPos + 16, topPos + 62, 144, 12)
+                    .setOutlineColor(0xFF808080)
+                    .setTextInvisible();
+            mPassword.setFilter(string -> string != null && (string.isEmpty() || !FluxUtils.isBadPassword(string)));
+            mPassword.setMaxLength(FluxNetwork.MAX_PASSWORD_LENGTH);
+            mPassword.setResponder(string -> onEditSettingsChanged());
+            mPassword.setVisible(mSecurityLevel == SecurityLevel.ENCRYPTED);
+            addRenderableWidget(mPassword);
+        }
+    }
+
+    @Override
+    protected void drawForegroundLayer(GuiGraphicsExtractor gr, int mouseX, int mouseY, float deltaTicks) {
+        super.drawForegroundLayer(gr, mouseX, mouseY, deltaTicks);
+        if (getNetwork().isValid() || getNavigationTab() == EnumNavigationTab.TAB_CREATE) {
+            // Usar centeredText em vez de drawCenteredString
+            gr.centeredText(font, getNavigationTab().getTranslatedName(),
+                    leftPos + 88, topPos + 10, 0xFFB4B4B4);
+            // Usar text() em vez de drawString
+            gr.text(font,
+                    FluxTranslate.NETWORK_SECURITY.get() + ": " + ChatFormatting.AQUA + mSecurityLevel.getName(),
+                    leftPos + 16, topPos + 47, 0xFF808080);
+            gr.text(font, FluxTranslate.NETWORK_COLOR.get() + ":", leftPos + 16, topPos + 89, 0xFF808080);
+
+            renderNetwork(gr, mNetworkName.getValue(), mColorButton.mColor, topPos + 126);
+        }
+    }
+
+    // CORREÇÃO: onMouseClicked agora usa MouseButtonEvent
+    @Override
+    public boolean onMouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        double mouseX = event.x();
+        double mouseY = event.y();
+        int mouseButton = event.button();
+
+        if (super.onMouseClicked(event, doubleClick)) {
+            return true;
+        }
+        if (mouseButton == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+            if (mouseX >= leftPos + 36 && mouseX < leftPos + 96 && mouseY >= topPos + 48 && mouseY < topPos + 56) {
+                mSecurityLevel = FluxUtils.cycle(mSecurityLevel, SecurityLevel.VALUES);
+                mPassword.setVisible(mSecurityLevel == SecurityLevel.ENCRYPTED);
+                onEditSettingsChanged();
+                return true;
+            }
+        }
+        return false;
+    }
+    @Override
+    public void onButtonClicked(GuiButtonCore button, float mouseX, float mouseY, int mouseButton) {
+        super.onButtonClicked(button, mouseX, mouseY, mouseButton);
+        if (button instanceof ColorButton) {
+            mColorButton.setSelected(false);
+            mColorButton = (ColorButton) button;
+            mColorButton.setSelected(true);
+            onEditSettingsChanged();
+            if (mouseButton == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
+                openPopup(new PopupCustomColor(this, mColorButton.mColor));
+            }
+        }
+    }
+
+    @Override
+    public void onPopupClose(GuiPopupCore<?> popUp) {
+        super.onPopupClose(popUp);
+        if (popUp instanceof PopupCustomColor) {
+            mColorButton.mColor = ((PopupCustomColor) popUp).mCurrentColor;
+            onEditSettingsChanged();
+        }
+    }
+}

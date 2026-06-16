@@ -1,0 +1,17 @@
+{
+  "type": "fluxnetworks:flux_storage_recipe",
+  "category": "misc",
+  "group": "fluxnetworks",
+  "pattern": [
+    "bbb",
+    "g g",
+    "bbb"
+  ],
+  "key": {
+    "b": "fluxnetworks:basic_flux_storage",
+    "g": "#c:glass_panes"
+  },
+  "result": {
+    "id": "fluxnetworks:herculean_flux_storage"
+  }
+}

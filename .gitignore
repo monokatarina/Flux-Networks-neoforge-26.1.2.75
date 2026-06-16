@@ -1,0 +1,39 @@
+# eclipse
+bin
+*.launch
+.settings
+.metadata
+.classpath
+.project
+
+# idea
+out
+*.ipr
+*.iws
+*.iml
+.idea
+
+# gradle
+build
+.gradle
+
+# other
+eclipse
+run
+classes
+*.psd
+resource
+
+# IntelliJ
+.idea/
+*.iml
+out/
+
+# Minecraft / NeoForge
+run/
+runs/
+logs/
+crash-reports/
+
+# Arquivos temporários
+*.log
