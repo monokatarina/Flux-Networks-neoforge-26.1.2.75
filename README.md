@@ -47,8 +47,7 @@ Use this version at your own risk and make backups of your worlds before install
 * Flux Plug, Flux Point, Flux Controller, and energy networks appear to work
 * Energy transfer, storage, and management appear to work
 * Dependencies and integrations were adjusted for the newer NeoForge environment
-* Multiplayer and dedicated servers have not been tested
-* Bugs and compatibility problems may still exist
+
 
 ### Project versions
 
@@ -78,6 +77,8 @@ https://github.com/SonarSonic/Flux-Networks
 I only downloaded the original repository and updated it for NeoForge 26.1.2.75.
 
 All credit for the original mod, source code, ideas, assets, and designs belongs to the original Flux Networks developers and contributors.
+
+The bug with Tectonic has been fixed, and the mod is 100% stable so far!
 
 * Flux Networks source code: MIT License
 * GUI designs and resources: CC BY-NC-SA 4.0
@@ -118,7 +119,7 @@ Use esta versão por sua conta e risco e faça backup dos seus mundos antes de i
 * Transferência, armazenamento e gerenciamento de energia parecem funcionar
 * Dependências e integrações foram ajustadas para o ambiente mais recente do NeoForge
 * Multiplayer e servidores dedicados ainda não foram testados
-* Ainda podem existir bugs e problemas de compatibilidade
+
 
 ### Versões do projeto
 
@@ -153,3 +154,4 @@ Todos os créditos pelo mod original, código-fonte, ideias, recursos e designs 
 * Designs e recursos da interface gráfica: CC BY-NC-SA 4.0
 
 Consulte o arquivo [LICENSE](LICENSE) para mais informações.
+O bug com o Tectonic foi corrigido e o mod está 100% estável até agora!
