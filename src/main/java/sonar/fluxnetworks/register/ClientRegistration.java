@@ -6,8 +6,11 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import sonar.fluxnetworks.FluxNetworks;
+import sonar.fluxnetworks.client.FluxColorHandler;
+import sonar.fluxnetworks.client.FluxNetworkItemTintSource;
 import sonar.fluxnetworks.client.gui.GuiFluxAdminHome;
 import sonar.fluxnetworks.client.gui.GuiFluxDeviceHome;
 import sonar.fluxnetworks.client.render.FluxStorageEntityRenderer;
@@ -52,5 +55,22 @@ public class ClientRegistration {
         event.registerBlockEntityRenderer(RegistryBlockEntityTypes.GARGANTUAN_FLUX_STORAGE, FluxStorageEntityRenderer.PROVIDER);
     }
 
+    @SubscribeEvent
+    public static void registerItemTintSources(RegisterColorHandlersEvent.ItemTintSources event) {
+        event.register(FluxNetworks.location("network_color"), FluxNetworkItemTintSource.MAP_CODEC);
+    }
+
+    @SubscribeEvent
+    public static void registerBlockTintSources(RegisterColorHandlersEvent.BlockTintSources event) {
+        event.register(
+                java.util.List.of(state -> -1, FluxColorHandler.INSTANCE),
+                RegistryBlocks.FLUX_CONTROLLER,
+                RegistryBlocks.FLUX_POINT,
+                RegistryBlocks.FLUX_PLUG,
+                RegistryBlocks.BASIC_FLUX_STORAGE,
+                RegistryBlocks.HERCULEAN_FLUX_STORAGE,
+                RegistryBlocks.GARGANTUAN_FLUX_STORAGE
+        );
+    }
 }
 

@@ -200,6 +200,16 @@ public class FluxNetwork {
         return mConnectionMap.get(pos);
     }
 
+    public void updateClientConnection(@Nonnull CompoundTag tag) {
+        final GlobalPos pos = FluxUtils.readGlobalPos(tag);
+        final IFluxDevice device = mConnectionMap.get(pos);
+        if (device != null) {
+            device.readCustomTag(tag, FluxConstants.NBT_PHANTOM_UPDATE);
+        } else {
+            mConnectionMap.put(pos, PhantomFluxDevice.makeUpdated(pos, tag));
+        }
+    }
+
     /**
      * Returns a collection view that contains all loaded entities and unloaded devices.
      *

@@ -11,7 +11,55 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "fluxnetworks:basic_flux_storage"
+          "name": "fluxnetworks:basic_flux_storage",
+          "functions": [
+            {
+              "function": "minecraft:copy_custom_data",
+              "source": "block_entity",
+              "ops": [
+                {
+                  "source": "fluxData.networkID",
+                  "target": "FluxData.networkID",
+                  "op": "replace"
+                },
+                {
+                  "source": "fluxData.customName",
+                  "target": "FluxData.customName",
+                  "op": "replace"
+                },
+                {
+                  "source": "fluxData.priority",
+                  "target": "FluxData.priority",
+                  "op": "replace"
+                },
+                {
+                  "source": "fluxData.limit",
+                  "target": "FluxData.limit",
+                  "op": "replace"
+                },
+                {
+                  "source": "fluxData.surgeMode",
+                  "target": "FluxData.surgeMode",
+                  "op": "replace"
+                },
+                {
+                  "source": "fluxData.disableLimit",
+                  "target": "FluxData.disableLimit",
+                  "op": "replace"
+                },
+                {
+                  "source": "fluxData.clientColor",
+                  "target": "FluxData.clientColor",
+                  "op": "replace"
+                },
+                {
+                  "source": "fluxData.energy",
+                  "target": "FluxData.energy",
+                  "op": "replace"
+                }
+              ]
+            }
+          ]
         }
       ],
       "rolls": 1.0

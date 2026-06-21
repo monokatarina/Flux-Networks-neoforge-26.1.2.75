@@ -10,6 +10,7 @@ import sonar.fluxnetworks.api.FluxConstants;
 import sonar.fluxnetworks.api.FluxTranslate;
 import sonar.fluxnetworks.api.gui.EnumNetworkColor;
 import sonar.fluxnetworks.api.network.SecurityLevel;
+import sonar.fluxnetworks.client.ClientCache;
 import sonar.fluxnetworks.client.gui.EnumNavigationTab;
 import sonar.fluxnetworks.client.gui.basic.GuiButtonCore;
 import sonar.fluxnetworks.client.gui.button.ColorButton;
@@ -169,7 +170,12 @@ public class GuiTabSettings extends GuiTabEditAbstract {
             return;
         }
         if (code == FluxConstants.RESPONSE_SUCCESS) {
-            if (key == FluxConstants.REQUEST_DELETE_NETWORK) {
+            if (key == FluxConstants.REQUEST_EDIT_NETWORK) {
+                getNetwork().setNetworkName(mNetworkName.getValue());
+                getNetwork().setNetworkColor(mColorButton.mColor);
+                getNetwork().setSecurityLevel(mSecurityLevel);
+                ClientCache.refreshLoadedNetworkBlocks(getNetwork().getNetworkID());
+            } else if (key == FluxConstants.REQUEST_DELETE_NETWORK) {
                 switchTab(EnumNavigationTab.TAB_HOME, false);
             }
         }

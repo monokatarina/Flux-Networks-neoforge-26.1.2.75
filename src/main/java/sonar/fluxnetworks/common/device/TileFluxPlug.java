@@ -78,7 +78,7 @@ public class TileFluxPlug extends TileFluxConnector implements IFluxPlug {
         @Override
         public int insert(int amount, TransactionContext transaction) {
             if (!getNetwork().isValid()) return 0;
-            return (int) mHandler.receive(amount, mSide, false, getNetwork().getBufferLimiter());
+            return (int) mHandler.receive(amount, mSide, transaction, getNetwork().getBufferLimiter());
         }
 
         @Override

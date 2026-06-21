@@ -7,6 +7,7 @@ import net.neoforged.fml.common.Mod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import sonar.fluxnetworks.common.capability.FluxPlayer;
+import sonar.fluxnetworks.common.device.FluxCapabilityRegistrar;
 
 import javax.annotation.Nonnull;
 
@@ -28,8 +29,8 @@ public class FluxNetworks {
 
         FluxConfig.init(modContainer);
 
-        // CORRIGIDO: registrar o DeferredRegister no event bus do mod
         FluxPlayer.ATTACHMENT_TYPES.register(modContainer.getEventBus());
+        modContainer.getEventBus().addListener(FluxCapabilityRegistrar::registerCapabilities);
     }
 
     public static boolean isCuriosLoaded() {

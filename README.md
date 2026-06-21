@@ -49,6 +49,15 @@ Use this version at your own risk and make backups of your worlds before install
 * Dependencies and integrations were adjusted for the newer NeoForge environment
 
 
+### Recent fixes
+
+* Added NeoForge energy capability registration for Flux Plug and Flux Point so modded energy pipes can connect more reliably.
+* Fixed Flux Plug and Flux Point color rendering for the selected network color.
+* Fixed network color refresh when selecting or editing a network, including loaded blocks already placed in the world.
+* Fixed block color sync after changing dimensions or reopening a world.
+* Fixed Wireless Charging inventory button texture slicing.
+* Fixed configured Flux devices dropping items with their saved network, name, transfer, color, and energy data.
+
 ### Project versions
 
 * **NeoForge:** 26.1.2.75
@@ -120,6 +129,15 @@ Use esta versão por sua conta e risco e faça backup dos seus mundos antes de i
 * Dependências e integrações foram ajustadas para o ambiente mais recente do NeoForge
 * Multiplayer e servidores dedicados ainda não foram testados
 
+
+### Correções recentes
+
+* Adicionado registro de capability de energia do NeoForge para Flux Plug e Flux Point, melhorando a conexão com pipes de energia de outros mods.
+* Corrigida a renderização de cor do Flux Plug e Flux Point com a cor escolhida da rede.
+* Corrigida a atualização da cor da rede ao selecionar ou editar uma rede, incluindo blocos já colocados e carregados no mundo.
+* Corrigido o sync da cor dos blocos ao trocar de dimensão ou reabrir o mundo.
+* Corrigido o recorte da textura dos botões do Wireless Charging no inventário.
+* Corrigido o drop de dispositivos Flux configurados para manter rede, nome, transferência, cor e energia no item.
 
 ### Versões do projeto
 

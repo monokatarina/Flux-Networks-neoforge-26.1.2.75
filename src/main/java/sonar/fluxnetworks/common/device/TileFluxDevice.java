@@ -3,6 +3,7 @@ package sonar.fluxnetworks.common.device;
 import net.minecraft.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
@@ -189,7 +190,7 @@ public abstract class TileFluxDevice extends BlockEntity implements IFluxDevice 
         }
         mNetwork = network;
         mNetworkID = network.getNetworkID();
-        mClientColor = FluxUtils.getModifiedColor(network.getNetworkColor(), 1.1f);
+        setClientColor(network.getNetworkColor());
     }
 
 
@@ -202,22 +203,25 @@ public abstract class TileFluxDevice extends BlockEntity implements IFluxDevice 
     }
 
 
-    public final void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet) {
-        readCustomTag(packet.getTag(), FluxConstants.NBT_TILE_UPDATE);
+    @Override
+    public final void onDataPacket(Connection net, ValueInput input) {
+        readUpdateInput(input);
         if (level != null) {
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL_IMMEDIATE);
         }
     }
 
     @Nonnull
-    public final CompoundTag getUpdateTag() {
-        CompoundTag tag = new CompoundTag();  // Não use super.getUpdateTag()
+    @Override
+    public final CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        CompoundTag tag = new CompoundTag();
         writeCustomTag(tag, FluxConstants.NBT_TILE_UPDATE);
         return tag;
     }
 
-    public final void handleUpdateTag(CompoundTag tag) {
-        readCustomTag(tag, FluxConstants.NBT_TILE_UPDATE);
+    @Override
+    public final void handleUpdateTag(ValueInput input) {
+        readUpdateInput(input);
     }
 
     @Override
@@ -248,12 +252,11 @@ public abstract class TileFluxDevice extends BlockEntity implements IFluxDevice 
         switch (type) {
             case FluxConstants.NBT_SAVE_ALL -> {
                 tag.putString(FluxConstants.PLAYER_UUID, mOwnerUUID.toString());
+                tag.putInt(FluxConstants.CLIENT_COLOR, getNetworkColorForClient());
             }
             case FluxConstants.NBT_TILE_UPDATE -> {
                 tag.putString(FluxConstants.PLAYER_UUID, mOwnerUUID.toString());
-                if ((mFlags & FLAG_FIRST_TICKED) != 0) {
-                    tag.putInt(FluxConstants.CLIENT_COLOR, mNetwork.getNetworkColor());
-                }
+                tag.putInt(FluxConstants.CLIENT_COLOR, getNetworkColorForClient());
                 tag.putInt(FluxConstants.FLAGS, mFlags);
             }
             case FluxConstants.NBT_PHANTOM_UPDATE -> {
@@ -312,6 +315,9 @@ public abstract class TileFluxDevice extends BlockEntity implements IFluxDevice 
                 } catch (IllegalArgumentException e) {
                     mOwnerUUID = Util.NIL_UUID;
                 }
+                if (tag.contains(FluxConstants.CLIENT_COLOR)) {
+                    setClientColor(tag.getInt(FluxConstants.CLIENT_COLOR).orElse(0));
+                }
             }
             case FluxConstants.NBT_TILE_UPDATE -> {
                 String uuidString = tag.getString(FluxConstants.PLAYER_UUID).orElse(Util.NIL_UUID.toString());
@@ -321,17 +327,48 @@ public abstract class TileFluxDevice extends BlockEntity implements IFluxDevice 
                     mOwnerUUID = Util.NIL_UUID;
                 }
                 if (tag.contains(FluxConstants.CLIENT_COLOR)) {
-                    mClientColor = FluxUtils.getModifiedColor(tag.getInt(FluxConstants.CLIENT_COLOR).orElse(0), 1.1f);
+                    setClientColor(tag.getInt(FluxConstants.CLIENT_COLOR).orElse(0));
                 }
                 mFlags = tag.getInt(FluxConstants.FLAGS).orElse(0);
             }
             case FluxConstants.NBT_TILE_DROP -> {
                 if (level != null && level.isClientSide()) {
-                    mClientColor = FluxUtils.getModifiedColor(
-                            ClientCache.getNetwork(mNetworkID).getNetworkColor(), 1.1f);
+                    setClientColor(ClientCache.getNetwork(mNetworkID).getNetworkColor());
                 }
             }
         }
+    }
+
+    private void setClientColor(int color) {
+        int previousColor = mClientColor;
+        mClientColor = FluxUtils.getModifiedColor(color, 1.1f);
+        if (level != null && level.isClientSide() && previousColor != mClientColor) {
+            BlockState state = getBlockState();
+            level.sendBlockUpdated(worldPosition, state, state, Block.UPDATE_ALL_IMMEDIATE);
+        }
+    }
+
+    private int getNetworkColorForClient() {
+        if (mNetwork.isValid()) {
+            return mNetwork.getNetworkColor();
+        }
+        return FluxNetworkData.getNetwork(mNetworkID).getNetworkColor();
+    }
+
+    private void readUpdateInput(ValueInput input) {
+        CompoundTag tag = new CompoundTag();
+        tag.putInt(FluxConstants.NETWORK_ID, input.getIntOr(
+                FluxConstants.NETWORK_ID, FluxConstants.INVALID_NETWORK_ID));
+        tag.putString(FluxConstants.CUSTOM_NAME, input.getStringOr(FluxConstants.CUSTOM_NAME, ""));
+        input.getString(FluxConstants.PLAYER_UUID).ifPresent(value -> tag.putString(FluxConstants.PLAYER_UUID, value));
+        input.getInt(FluxConstants.CLIENT_COLOR).ifPresent(value -> tag.putInt(FluxConstants.CLIENT_COLOR, value));
+        input.getInt(FluxConstants.FLAGS).ifPresent(value -> tag.putInt(FluxConstants.FLAGS, value));
+        input.getLong(FluxConstants.CHANGE).ifPresent(value -> tag.putLong(FluxConstants.CHANGE, value));
+        input.getInt(FluxConstants.PRIORITY).ifPresent(value -> tag.putInt(FluxConstants.PRIORITY, value));
+        tag.putBoolean(FluxConstants.SURGE_MODE, input.getBooleanOr(FluxConstants.SURGE_MODE, false));
+        tag.putLong(FluxConstants.LIMIT, input.getLongOr(FluxConstants.LIMIT, 0));
+        tag.putBoolean(FluxConstants.DISABLE_LIMIT, input.getBooleanOr(FluxConstants.DISABLE_LIMIT, false));
+        readCustomTag(tag, FluxConstants.NBT_TILE_UPDATE);
     }
 
     public boolean canPlayerAccess(@Nonnull Player player) {

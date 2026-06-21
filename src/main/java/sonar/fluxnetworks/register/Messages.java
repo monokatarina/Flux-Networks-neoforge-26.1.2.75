@@ -114,6 +114,17 @@ public class Messages {
     }
 
     @Nonnull
+    private static List<CompoundTag> makeConnectionTags(FluxNetwork network) {
+        List<CompoundTag> tags = new ArrayList<>();
+        for (IFluxDevice device : network.getAllConnections()) {
+            CompoundTag tag = new CompoundTag();
+            device.writeCustomTag(tag, FluxConstants.NBT_PHANTOM_UPDATE);
+            tags.add(tag);
+        }
+        return tags;
+    }
+
+    @Nonnull
     public static FriendlyByteBuf updateNetwork(Collection<FluxNetwork> networks, byte type) {
         var buf = Channel.buffer(S2C_UPDATE_NETWORK);
         buf.writeByte(type);
@@ -362,8 +373,12 @@ public class Messages {
         assert network.isValid();
         if (network.getPlayerAccess(p).canEdit()) {
             boolean changed = network.setNetworkName(name);
-            if (network.setNetworkColor(color)) {
-                network.getLogicalDevices(FluxNetwork.ANY).forEach(TileFluxDevice::sendBlockUpdate);
+            boolean colorChanged = network.setNetworkColor(color);
+            if (colorChanged) {
+                network.getLogicalDevices(FluxNetwork.ANY).forEach(device -> {
+                    device.sendBlockUpdate();
+                    device.markChunkUnsaved();
+                });
                 changed = true;
             }
             changed |= network.setSecurityLevel(security);
@@ -372,6 +387,9 @@ public class Messages {
             }
             if (changed) {
                 sChannel.sendToAll(updateNetwork(network, FluxConstants.NBT_NET_BASIC));
+                if (colorChanged) {
+                    sChannel.sendToAll(updateConnections(network, makeConnectionTags(network)));
+                }
             }
             response(token, FluxConstants.REQUEST_EDIT_NETWORK, FluxConstants.RESPONSE_SUCCESS, p);
         } else {

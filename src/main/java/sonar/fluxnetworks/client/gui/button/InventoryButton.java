@@ -50,7 +50,7 @@ public class InventoryButton extends GuiButtonCore {
                 x,
                 y,
                 mU0,
-                mV0 + 11 * (mType.isActivated(mHost.mWirelessMode) ? 1 : 0),
+                mV0 + height * (mType.isActivated(mHost.mWirelessMode) ? 1 : 0),
                 width,
                 height,
                 width,

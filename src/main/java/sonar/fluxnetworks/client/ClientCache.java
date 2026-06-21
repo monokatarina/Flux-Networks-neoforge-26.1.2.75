@@ -1,14 +1,18 @@
 package sonar.fluxnetworks.client;
 
 import it.unimi.dsi.fastutil.ints.*;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
 import sonar.fluxnetworks.FluxNetworks;
 import sonar.fluxnetworks.api.FluxConstants;
 import sonar.fluxnetworks.api.device.IFluxDevice;
 import sonar.fluxnetworks.common.connection.ClientFluxNetwork;
 import sonar.fluxnetworks.common.connection.FluxNetwork;
+import sonar.fluxnetworks.common.device.TileFluxDevice;
 import sonar.fluxnetworks.common.util.FluxUtils;
 
 import javax.annotation.Nonnull;
@@ -59,6 +63,9 @@ public final class ClientCache {
         for (var e : map.int2ObjectEntrySet()) {
             sNetworks.computeIfAbsent(e.getIntKey(), ClientFluxNetwork::new)
                     .readCustomTag(e.getValue(), type);
+            if (type == FluxConstants.NBT_NET_BASIC) {
+                refreshLoadedNetworkBlocks(e.getIntKey());
+            }
         }
     }
 
@@ -66,11 +73,32 @@ public final class ClientCache {
         final FluxNetwork network = sNetworks.get(networkID);
         if (network != null) {
             for (var tag : tags) {
-                final GlobalPos pos = FluxUtils.readGlobalPos(tag);
-                final IFluxDevice device = network.getConnectionByPos(pos);
-                if (device != null) {
-                    device.readCustomTag(tag, FluxConstants.NBT_PHANTOM_UPDATE);
-                }
+                network.updateClientConnection(tag);
+            }
+            refreshLoadedNetworkBlocks(networkID);
+        }
+    }
+
+    public static void refreshLoadedNetworkBlocks(int networkID) {
+        Minecraft minecraft = Minecraft.getInstance();
+        if (minecraft.level == null) {
+            return;
+        }
+        FluxNetwork network = getNetwork(networkID);
+        if (!network.isValid()) {
+            return;
+        }
+        for (IFluxDevice connection : network.getAllConnections()) {
+            GlobalPos pos = connection.getGlobalPos();
+            if (!pos.dimension().equals(minecraft.level.dimension()) || !minecraft.level.isLoaded(pos.pos())) {
+                continue;
+            }
+            if (minecraft.level.getBlockEntity(pos.pos()) instanceof TileFluxDevice device &&
+                    device.getNetworkID() == networkID) {
+                device.setClientNetwork(network);
+            } else {
+                BlockState state = minecraft.level.getBlockState(pos.pos());
+                minecraft.level.sendBlockUpdated(pos.pos(), state, state, Block.UPDATE_ALL_IMMEDIATE);
             }
         }
     }

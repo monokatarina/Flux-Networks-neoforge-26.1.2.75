@@ -82,7 +82,7 @@ public class TileFluxPoint extends TileFluxConnector implements IFluxPoint {
 
         @Override
         public int extract(int amount, TransactionContext transaction) {
-            return (int) Math.min(mHandler.removeFromBuffer(amount), Integer.MAX_VALUE);
+            return (int) Math.min(mHandler.removeFromBuffer(amount, transaction), Integer.MAX_VALUE);
         }
     }
 

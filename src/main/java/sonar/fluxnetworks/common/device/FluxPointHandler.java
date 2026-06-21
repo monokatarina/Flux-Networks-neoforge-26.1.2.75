@@ -1,8 +1,12 @@
 package sonar.fluxnetworks.common.device;
 
+import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+
 public class FluxPointHandler extends FluxConnectorHandler {
 
     private long mDesired;
+    private final TransactionJournal mTransactionJournal = new TransactionJournal();
 
     public FluxPointHandler() {
     }
@@ -30,6 +34,15 @@ public class FluxPointHandler extends FluxConnectorHandler {
         return op;
     }
 
+    public long removeFromBuffer(long energy, TransactionContext transaction) {
+        long op = Math.min(energy, mBuffer);
+        if (op > 0) {
+            mTransactionJournal.updateSnapshots(transaction);
+            mBuffer -= op;
+        }
+        return op;
+    }
+
     @Override
     public long getRequest() {
         return Math.max(mDesired - mBuffer, 0);
@@ -46,5 +59,23 @@ public class FluxPointHandler extends FluxConnectorHandler {
             }
         }
         return energy - leftover;
+    }
+
+    private class TransactionJournal extends SnapshotJournal<TransactionSnapshot> {
+
+        @Override
+        protected TransactionSnapshot createSnapshot() {
+            return new TransactionSnapshot(mBuffer, mChange, mDesired);
+        }
+
+        @Override
+        protected void revertToSnapshot(TransactionSnapshot snapshot) {
+            mBuffer = snapshot.buffer;
+            mChange = snapshot.change;
+            mDesired = snapshot.desired;
+        }
+    }
+
+    private record TransactionSnapshot(long buffer, long change, long desired) {
     }
 }
