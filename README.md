@@ -24,7 +24,6 @@ https://github.com/monokatarina/Flux-Networks-neoforge-26.1.2.75/releases/tag/v2
 
 ![Flux Networks screenshot 4](docs/images/%7B9C4FD954-931D-483B-ACD6-435CC61ADC46%7D.png)
 
-![Flux Networks screenshot 5](docs/images/%7BDF02E34A-3E0A-4AE0-A96C-A965807FC93A%7D.png)
 
 
 
