@@ -4,6 +4,20 @@
 
 ---
 
+## Download
+
+**Latest ready-to-use `.jar`:**
+
+https://github.com/monokatarina/Flux-Networks-neoforge-26.1.2.75/releases/download/v26.1.2-7.2.1.15/FluxNetworks-26.1.2-7.2.1.15.jar
+
+If you only want to install the mod, download the `.jar` above and place it in your Minecraft `mods` folder. You do not need to download the source code or use GitHub's green **Code** button.
+
+**Release page:**
+
+https://github.com/monokatarina/Flux-Networks-neoforge-26.1.2.75/releases/tag/v26.1.2-7.2.1.15
+
+---
+
 ## Screenshots
 
 ![Flux Networks screenshot 3](docs/images/%7B9A77B477-F5EC-4B45-8FC3-00DEBC8622D3%7D.png)
@@ -27,6 +41,14 @@ https://github.com/SonarSonic/Flux-Networks
 Then I updated the project on my own to make it compatible with the newer NeoForge environment.
 
 This is not an official Flux Networks release and I am not one of the original developers.
+
+### Download the mod
+
+Download the ready `.jar` file here:
+
+https://github.com/monokatarina/Flux-Networks-neoforge-26.1.2.75/releases/download/v26.1.2-7.2.1.15/FluxNetworks-26.1.2-7.2.1.15.jar
+
+Put this file in your Minecraft `mods` folder. Do not download the repository source code unless you want to build or edit the mod.
 
 ### Important notice
 
@@ -107,6 +129,14 @@ https://github.com/SonarSonic/Flux-Networks
 Depois, atualizei o projeto sozinho para tentar torná-lo compatível com o ambiente mais recente do NeoForge.
 
 Esta não é uma versão oficial do Flux Networks e eu não faço parte da equipe original do mod.
+
+### Baixar o mod
+
+Baixe o arquivo `.jar` pronto aqui:
+
+https://github.com/monokatarina/Flux-Networks-neoforge-26.1.2.75/releases/download/v26.1.2-7.2.1.15/FluxNetworks-26.1.2-7.2.1.15.jar
+
+Coloque esse arquivo na pasta `mods` do Minecraft. Não baixe o código-fonte do repositório, nem use o botão verde **Code**, a menos que você queira compilar ou editar o mod.
 
 ### Aviso importante
 
